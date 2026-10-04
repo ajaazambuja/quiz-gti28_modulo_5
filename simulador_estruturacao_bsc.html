@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simulador — Estruturação de BSC</title>
+<style>
+:root{--n:#07366f;--o:#f58220;--bg:#f4f7fb;--muted:#687487;--line:#d9e0ea;--g:#176b3a;--r:#a12b2b}
+*{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#182333;line-height:1.45}
+header{background:linear-gradient(120deg,#052d5d,#084887);color:#fff;padding:32px 20px;border-bottom:7px solid var(--o)}
+.wrap,main{max-width:1120px;margin:auto}h1{margin:0 0 5px;font-size:clamp(27px,4vw,39px)}header p{margin:4px 0}
+main{padding:22px 16px 50px}.card,.status,.result{background:#fff;border-radius:14px;padding:20px;margin-bottom:17px;box-shadow:0 4px 16px #00000012}
+h2{color:var(--n);margin-top:0}.status{position:sticky;top:8px;z-index:5;display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding:12px 18px}
+.badge{background:#eef3fa;color:var(--n);padding:6px 10px;border-radius:20px;font-size:13px;font-weight:bold}.barbg{height:10px;background:#e2e7ee;border-radius:10px;overflow:hidden;flex:1;min-width:180px}.bar{height:100%;width:0;background:var(--o);transition:.3s}
+.perspective{border-left:7px solid var(--o)}.desc{color:var(--muted);margin-top:-7px}.field{margin:14px 0}.field>span{display:block;font-weight:bold;margin-bottom:6px;color:#26364a}
+.choice{display:block;border:1px solid var(--line);border-radius:9px;padding:10px 12px;margin:7px 0;cursor:pointer;background:#fff}.choice:hover{background:#f7f9fc;border-color:#aebbd0}.choice input{margin-right:8px}
+.actions{display:flex;gap:9px;flex-wrap:wrap;margin:22px 0}button{border:0;border-radius:9px;padding:13px 18px;font-weight:bold;cursor:pointer}.primary{background:var(--n);color:#fff}.secondary{background:#e5eaf1}
+.result{display:none;border-left:6px solid var(--o)}.show{display:block}.notice{background:#fff7e9;border-left:5px solid var(--o);padding:11px 12px;border-radius:8px}
+.bsc{width:100%;border-collapse:collapse;font-size:13px}.bsc th,.bsc td{border:1px solid #ccd5e1;padding:9px;vertical-align:top}.bsc th{background:#202020;color:#fff}.bsc .pname{font-weight:bold;color:#fff;width:130px}.p-fin{background:#3478c7}.p-cli{background:#4667a9}.p-pro{background:#ef7d22}.p-apr{background:#f39a17}
+.fb{padding:10px 12px;border-radius:8px;margin-top:10px}.ok{background:#eaf7ef;color:var(--g)}.bad{background:#fff0f0;color:var(--r)}
+.hintbtn{margin-top:7px;background:#fff7e9;color:#7a4a00;border:1px solid #f0c98a;padding:8px 12px}
+.hintbox{display:none;margin-top:8px;padding:10px 12px;background:#fff7e9;border-left:4px solid var(--o);border-radius:7px;color:#5e4a2c}
+.hintbox.showhint{display:block}.answerkey{display:none;margin-top:24px;border-top:2px solid #d9e0ea;padding-top:18px}.answerkey.show{display:block}
+.answerkey h2{margin-bottom:6px}.answerkey .explain{color:var(--muted);margin-top:0}
+footer{text-align:center;color:#667284;padding:20px}@media(max-width:700px){.status{position:static}.actions button{width:100%}.bsc{font-size:11px}}
+@media print{header,.status,.actions,.intro,footer{display:none!important}.result{display:block;box-shadow:none;border:0}body{background:#fff}}
+</style></head><body>
+<header><div class="wrap"><h1>Simulador de BSC</h1><p><b>Estruturação de um Balanced Scorecard</b></p><p>Objetivos estratégicos • Metas • Objetivos • KPIs • Metas dos indicadores</p></div></header>
+<main>
+<section class="card intro"><h2>Desafio</h2>
+<p>Com base na lógica apresentada no quadro de Balanced Scorecard, selecione os elementos que melhor se relacionam em cada perspectiva. O aluno deverá estruturar o BSC escolhendo <b>objetivo estratégico, meta estratégica, objetivo associado, KPI e meta do indicador</b>.</p>
+<div class="notice">As alternativas foram organizadas para exigir associação entre os elementos. Ao concluir, o simulador apresenta o BSC estruturado e informa o nível de coerência das escolhas.</div></section>
+<section class="status"><span class="badge" id="answered">Seleções: 0 / 20</span><div class="barbg"><div class="bar" id="progress"></div></div><span class="badge" id="pct">Completude: 0%</span></section>
+<div id="builder"></div>
+<div class="actions"><button class="primary" onclick="gerar()">Estruturar BSC</button><button class="secondary" onclick="reiniciar()">Refazer simulação</button><button class="secondary" onclick="window.print()">Imprimir / Salvar em PDF</button></div>
+<section id="res" class="result"><h2>BSC estruturado</h2><p id="score"></p><div style="overflow:auto"><table class="bsc"><thead><tr><th>Perspectiva</th><th>Objetivo estratégico</th><th>Meta estratégica</th><th>Objetivo</th><th>KPI</th><th>Meta do indicador</th></tr></thead><tbody id="table"></tbody></table></div><div id="feedback"></div><div id="gabarito" class="answerkey"><h2>Gabarito — BSC recomendado</h2><p class="explain">Como o BSC estruturado apresentou associações inadequadas, compare suas escolhas com a estrutura recomendada abaixo.</p><div style="overflow:auto"><table class="bsc"><thead><tr><th>Perspectiva</th><th>Objetivo estratégico</th><th>Meta estratégica</th><th>Objetivo</th><th>KPI</th><th>Meta do indicador</th></tr></thead><tbody id="gabaritoTable"></tbody></table></div></div></section>
+</main><footer>Planejamento e Gestão Estratégica de TI • Atividade de construção do BSC</footer>
+<script>
+const P=[
+{id:"fin",nome:"Financeira",cls:"p-fin",desc:"Resultados relacionados ao uso eficiente dos recursos e à sustentabilidade da estratégia.",dicas:{estrategico:"Pense no resultado estratégico relacionado ao uso responsável e eficiente dos recursos.",meta:"A meta estratégica deve indicar a direção de melhoria esperada para os recursos.",objetivo:"Escolha uma condição concreta que contribua para alcançar o resultado financeiro/orçamentário.",kpi:"O KPI precisa medir diretamente eficiência ou economia no uso dos recursos.",indicador:"A meta do indicador deve apresentar um valor mensurável associado ao KPI."},
+fields:{
+estrategico:["Otimizar a aplicação dos recursos disponíveis.","Ampliar o número de procedimentos administrativos.","Aumentar a quantidade de documentos produzidos."],
+meta:["Reduzir custos e elevar a eficiência no uso dos recursos.","Criar novas etapas de aprovação.","Aumentar a emissão de relatórios internos."],
+objetivo:["Melhorar a eficiência na utilização dos recursos.","Aumentar o número de reuniões da equipe.","Ampliar o espaço físico da unidade."],
+kpi:["Percentual de economia/eficiência dos recursos.","Quantidade de memorandos emitidos.","Número de reuniões realizadas."],
+indicador:["Alcançar redução de 10% nos custos ou ganhos equivalentes de eficiência.","Produzir 50 novos documentos por mês.","Realizar 20 reuniões mensais."]}},
+{id:"cli",nome:"Cliente / Cidadão",cls:"p-cli",desc:"Resultados percebidos pelos cidadãos e usuários dos serviços.",dicas:{estrategico:"Considere o valor e a experiência que a organização pretende entregar ao cidadão.",meta:"A meta estratégica deve expressar melhoria na percepção ou satisfação dos usuários.",objetivo:"Procure uma escolha diretamente relacionada à qualidade e agilidade do serviço entregue.",kpi:"O KPI deve captar a percepção do cidadão sobre o serviço.",indicador:"Escolha uma meta quantitativa diretamente relacionada à satisfação dos usuários."},
+fields:{
+estrategico:["Melhorar a qualidade e a experiência do cidadão com os serviços.","Aumentar a quantidade de controles internos.","Expandir o número de níveis hierárquicos."],
+meta:["Elevar a satisfação e a confiança dos usuários dos serviços.","Aumentar o número de formulários utilizados.","Criar novas chefias administrativas."],
+objetivo:["Oferecer serviços com maior qualidade e agilidade ao cidadão.","Ampliar o arquivo físico da organização.","Aumentar a circulação de documentos impressos."],
+kpi:["Índice de satisfação dos cidadãos/usuários.","Quantidade de páginas impressas.","Número de cargos existentes."],
+indicador:["Alcançar pelo menos 90% de satisfação dos usuários.","Aumentar em 30% o uso de papel.","Criar cinco novos cargos."]}},
+{id:"pro",nome:"Processos Internos",cls:"p-pro",desc:"Processos que precisam funcionar melhor para executar a estratégia.",dicas:{estrategico:"Pense nos processos que precisam ser aprimorados para executar melhor a estratégia.",meta:"A meta estratégica deve apontar melhoria de eficiência, qualidade ou tempo dos processos.",objetivo:"Escolha uma melhoria operacional concreta nos processos prioritários.",kpi:"O KPI deve medir diretamente o desempenho do processo.",indicador:"A meta deve quantificar a melhoria esperada no indicador do processo."},
+fields:{
+estrategico:["Aprimorar os processos internos de prestação dos serviços.","Aumentar a burocracia dos fluxos internos.","Criar etapas adicionais sem análise de necessidade."],
+meta:["Reduzir o tempo e aumentar a eficiência dos processos prioritários.","Aumentar o número de aprovações necessárias.","Expandir a quantidade de documentos em circulação."],
+objetivo:["Reduzir o tempo de execução dos processos e melhorar sua qualidade.","Aumentar o tempo de tramitação dos processos.","Priorizar procedimentos manuais."],
+kpi:["Tempo médio de execução/atendimento dos processos.","Quantidade de móveis da unidade.","Número de páginas dos procedimentos."],
+indicador:["Reduzir em 25% o tempo médio dos processos prioritários.","Aumentar em 20% a quantidade de móveis.","Ampliar em 30% o tamanho dos manuais."]}},
+{id:"apr",nome:"Aprendizado e Crescimento",cls:"p-apr",desc:"Pessoas, competências, informação e capacidades que sustentam os demais resultados.",dicas:{estrategico:"Considere as capacidades humanas e organizacionais necessárias para sustentar a estratégia.",meta:"A meta estratégica deve fortalecer qualificação, conhecimento ou engajamento.",objetivo:"Procure uma escolha relacionada ao desenvolvimento de competências e capacidade de inovação.",kpi:"O KPI deve medir diretamente o desenvolvimento das competências prioritárias.",indicador:"A meta deve estabelecer um percentual ou resultado verificável de capacitação."},
+fields:{
+estrategico:["Desenvolver competências e capacidades para sustentar a estratégia.","Reduzir ações de capacitação para diminuir custos.","Concentrar conhecimento crítico em poucos servidores."],
+meta:["Elevar a qualificação e o engajamento das equipes.","Diminuir o compartilhamento de conhecimento.","Restringir oportunidades de desenvolvimento."],
+objetivo:["Fortalecer competências, conhecimento e capacidade de inovação.","Reduzir a comunicação entre as equipes.","Evitar atualização de conhecimentos e tecnologias."],
+kpi:["Percentual de servidores capacitados nas competências prioritárias.","Quantidade de documentos arquivados.","Número de salas disponíveis."],
+indicador:["Capacitar pelo menos 90% dos servidores envolvidos.","Arquivar 100 documentos por mês.","Ampliar em duas salas a estrutura física."]}}
+];
+const labels={estrategico:"Objetivo estratégico",meta:"Meta estratégica",objetivo:"Objetivo",kpi:"KPI",indicador:"Meta do indicador"};
+const builder=document.getElementById("builder");
+function render(){
+ builder.innerHTML=P.map(p=>`<section class="card perspective"><h2>${p.nome}</h2><p class="desc">${p.desc}</p>${Object.entries(p.fields).map(([key,opts])=>`<div class="field"><span>${labels[key]}</span>${opts.map((o,j)=>`<label class="choice"><input type="radio" name="${p.id}-${key}" value="${j}" onchange="status()"> ${o}</label>`).join("")}<button class="hintbtn" type="button" onclick="toggleDica('${p.id}-${key}')">Dica</button><div id="dica-${p.id}-${key}" class="hintbox">${p.dicas[key]}</div></div>`).join("")}</section>`).join("");status();
+}
+function val(name){const e=document.querySelector(`input[name="${name}"]:checked`);return e?Number(e.value):null}
+function toggleDica(id){document.getElementById("dica-"+id).classList.toggle("showhint")}
+function status(){let n=0;P.forEach(p=>Object.keys(p.fields).forEach(k=>{if(val(p.id+"-"+k)!==null)n++}));let pc=Math.round(n/20*100);document.getElementById("answered").textContent=`Seleções: ${n} / 20`;document.getElementById("pct").textContent=`Completude: ${pc}%`;document.getElementById("progress").style.width=pc+"%"}
+function gerar(){
+ let missing=[];P.forEach(p=>Object.keys(p.fields).forEach(k=>{if(val(p.id+"-"+k)===null)missing.push(p.nome+" — "+labels[k])}));
+ if(missing.length){alert("Complete todas as seleções antes de estruturar o BSC.");return}
+ let correct=0,rows="",fb="";
+ P.forEach(p=>{
+  let chosen={};Object.keys(p.fields).forEach(k=>{let s=val(p.id+"-"+k);chosen[k]=p.fields[k][s];if(s===0)correct++});
+  rows+=`<tr><td class="pname ${p.cls}">${p.nome}</td><td>${chosen.estrategico}</td><td>${chosen.meta}</td><td>${chosen.objetivo}</td><td>${chosen.kpi}</td><td>${chosen.indicador}</td></tr>`;
+  let c=Object.keys(p.fields).filter(k=>val(p.id+"-"+k)===0).length;
+  fb+=`<div class="fb ${c===5?'ok':'bad'}"><b>${p.nome}:</b> ${c}/5 associações coerentes. ${c===5?'A perspectiva foi estruturada de forma consistente.':'Revise a relação entre objetivo estratégico, meta, objetivo, KPI e meta do indicador.'}</div>`;
+ });
+ let pc=Math.round(correct/20*100);
+ document.getElementById("table").innerHTML=rows;
+ document.getElementById("score").innerHTML=`Você realizou <b>${correct} de 20 associações coerentes (${pc}%)</b>. O quadro abaixo reproduz o BSC de acordo com as alternativas selecionadas.`;
+ document.getElementById("feedback").innerHTML=fb;
+ const gab=document.getElementById("gabarito");
+ if(correct<20){
+   document.getElementById("gabaritoTable").innerHTML=P.map(p=>`<tr><td class="pname ${p.cls}">${p.nome}</td><td>${p.fields.estrategico[0]}</td><td>${p.fields.meta[0]}</td><td>${p.fields.objetivo[0]}</td><td>${p.fields.kpi[0]}</td><td>${p.fields.indicador[0]}</td></tr>`).join("");
+   gab.classList.add("show");
+ }else{
+   gab.classList.remove("show");
+ }
+ document.getElementById("res").classList.add("show");document.getElementById("res").scrollIntoView({behavior:"smooth"});
+}
+function reiniciar(){document.querySelectorAll('input[type=radio]').forEach(x=>x.checked=false);document.querySelectorAll(".hintbox").forEach(x=>x.classList.remove("showhint"));document.getElementById("res").classList.remove("show");document.getElementById("gabarito").classList.remove("show");status();window.scrollTo({top:0,behavior:"smooth"})}
+render();
+</script></body></html>
